@@ -55,6 +55,8 @@ a various numerical methods for solving ode's and machine-learning schemes .
 
 
 
+---
+
 ### 📦 Installation
 
 #### 1. Clone the Repository
