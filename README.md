@@ -34,7 +34,6 @@
     <li><a href="#-whats-inside">What’s Inside (Methods)</a></li>
     <li><a href="#-key-concepts">Key Concepts (ODE)</a></li>
     <li><a href="#-methods-breakdown">Methods Breakdown</a></li>
-    <li><a href="#-output">ODE Output</a></li>
     <li><a href="#-physics-informed-neural-network-pinn-for-glucose-insulin-dynamics">PINN for Glucose-Insulin Dynamics</a></li>
     <li><a href="#-description">PINN Description</a></li>
     <li><a href="#-whats-inside-1">What’s Inside (PINN)</a></li>
@@ -65,7 +64,7 @@ a various numerical methods for solving ode's and machine-learning schemes .
 
 ---
 
-### 📦 Installation
+## 📦 Installation
 
 #### 1. Clone the Repository
 ```bash
