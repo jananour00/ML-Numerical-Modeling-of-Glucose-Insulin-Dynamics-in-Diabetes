@@ -328,7 +328,7 @@ The notebook provides **visual plots** for each method:
 - Time-series of **glucose and insulin** concentrations.
 - Comparison between methods.
 
-div name="Screenshots" align="center">
+  < div name="Screenshots" align="center">
    <img width=60% src="Methods_Screenshots/Screenshot_1.png" alt="logo">
    <hr>
 	
