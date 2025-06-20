@@ -255,7 +255,7 @@ The notebook simulates and predicts **glucose (G)** and **insulin (I)** behavior
 
 ---
 
-## 🖼️ Preview (Sample Code Snippets)
+##  Preview (Sample Code Snippets)
 
 ### Define Glucose Infusion Function
 
