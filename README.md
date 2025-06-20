@@ -75,16 +75,38 @@ pip install
 6. **You can run through**
 
 
-
-## 📌 How to use <a name = "start"></a>
-
-### Usage :
-- After compiling the project , try to load the desired image using the **File** in the menu bar
-- You can apply various changes in the multiple viewports available 
-- You can also calculate the SNR / CNR values 
-
-## 🎆 Features <a name = "features"></a>
-
+## 📝 Numerical Methods <a name = "features"></a>
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Description</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Login</td>
+      <td>User can login with email/password</td>
+      <td>✅ Working</td>
+    </tr>
+    <tr>
+      <td>Signup</td>
+      <td>Register new users</td>
+      <td>✅ Working</td>
+    </tr>
+    <tr>
+      <td>Dark Mode</td>
+      <td>Toggle between dark/light themes</td>
+      <td>🛠️ In Progress</td>
+    </tr>
+    <tr>
+      <td>Chat</td>
+      <td>Real-time messaging</td>
+      <td>❌ Not Started</td>
+    </tr>
+  </tbody>
+</table>
 - Applying High/low pass filters
 - Viewing Histogram by double clicking the image
 - Applying Brightness
