@@ -21,26 +21,34 @@
 </div>
 
 <details>
-  <summary>Table of Contents</summary>
+  <summary>📚 Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#about">About The Project</a>
+    <li><a href="#about">About The Project</a>
       <ul>
-        <li><a href="#tech">Built Using</a></li>
+        <li><a href="#-built-using">Built Using</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#install">Getting Started</a>
-      <ul>
-        <li><a href="#install">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#start">How to start</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#screenshots">Screenshots</a></li>
-	<li><a href="#contributors">Contributors</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#-running-the-notebook">Running the Notebook</a></li>
+    <li><a href="#-numerical-methods-for-solving-odes-in-glucose-insulin-modeling">Numerical Methods for Solving ODEs</a></li>
+    <li><a href="#-whats-inside">What’s Inside (Methods)</a></li>
+    <li><a href="#-key-concepts">Key Concepts (ODE)</a></li>
+    <li><a href="#-methods-breakdown">Methods Breakdown</a></li>
+    <li><a href="#-output">ODE Output</a></li>
+    <li><a href="#-physics-informed-neural-network-pinn-for-glucose-insulin-dynamics">PINN for Glucose-Insulin Dynamics</a></li>
+    <li><a href="#-description">PINN Description</a></li>
+    <li><a href="#-whats-inside-1">What’s Inside (PINN)</a></li>
+    <li><a href="#-key-concepts-1">Key Concepts (PINN)</a></li>
+    <li><a href="#-cases-modeled">Cases Modeled</a></li>
+    <li><a href="#-preview-sample-code-snippets">Preview (Sample Code)</a></li>
+    <li><a href="#-technologies-used">Technologies Used</a></li>
+    <li><a href="#-output-of-pinn">Output of PINN</a></li>
+    <li><a href="#-output-of-methods">Output of Methods</a></li>
+    <li><a href="#-citation">Citation</a></li>
+    <li><a href="#contributors">Contributors</a></li>
   </ol>
 </details>
+
 
 
 ## About
