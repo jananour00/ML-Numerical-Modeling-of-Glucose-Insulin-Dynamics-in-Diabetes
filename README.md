@@ -114,6 +114,7 @@ pip install
   </tbody>
 	
 </table>
+
 🧠 Key Notes:
 
 - ISODA Automatically chooses the most efficient and stable solver,
