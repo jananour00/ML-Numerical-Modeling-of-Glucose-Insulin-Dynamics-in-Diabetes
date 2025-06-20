@@ -95,8 +95,11 @@ jupyter notebook
 ---
 
 
+# 📘 Numerical Methods for Solving ODEs in Glucose-Insulin Modeling <a name = "features"></a>
+This notebook implements and compares **five numerical methods** for solving systems of ordinary differential equations (ODEs) in the context of **glucose-insulin dynamics**. Each method is applied to a system of biological ODEs with time-varying input and conditional behavior.
 
-## 📝 Numerical Methods <a name = "features"></a>
+---
+## 🚀 What's Inside?
 <table>
   <thead>
     <tr>
@@ -135,16 +138,59 @@ jupyter notebook
   </tbody>
 	
 </table>
+---
 
-🧠 Key Notes:
+## 📊 Key Concepts
 
-- ISODA Automatically chooses the most efficient and stable solver,
-Very robust for chemical kinetics, control systems, and biological models, where stiffness often arises unpredictably.
-- RK4 is a good general-purpose method when high accuracy is needed, and stiffness is not a concern.
-- Trapezoidal rule is often seen as a balance between accuracy and stability.
-- Newton-Raphson is used to solve the nonlinear algebraic equation resulting from implicit methods like Backward Euler.
-- Midpoint is a simple second-order method, more accurate than Euler, but less so than RK4.
+| Concept                 | Description |
+|------------------------|-------------|
+| **ODE System**         | Models glucose (`G`) and insulin (`I`) based on medical equations and physiological thresholds. |
+| **Conditional Logic**  | The model includes threshold behavior (`Gk`, `G0`) affecting both glucose and insulin rates. |
+| **Glucose Infusion**   | Modeled as a time-based piecewise function to simulate external glucose input. |
 
+---
+
+## 📂 Methods Breakdown
+
+### 🧮 1. ISODA (via `solve_ivp`)
+- Uses `scipy.integrate.solve_ivp` with default (LSODA-like) method.
+- Automatically switches between stiff and non-stiff solvers.
+- Simple to use, good for reference or real-world deployment.
+
+### ⚙️ 2. Classical Runge-Kutta (4th Order)
+```python
+for i in range(n):
+    k1 = h * f(t[i], y[i], params)
+    k2 = h * f(t[i] + h/2, y[i] + k1/2, params)
+    k3 = h * f(t[i] + h/2, y[i] + k2/2, params)
+    k4 = h * f(t[i] + h, y[i] + k3, params)
+    y[i+1] = y[i] + (k1 + 2*k2 + 2*k3 + k4) / 6
+```
+
+### 🔁 3. Trapezoidal Method (Implicit)
+- Uses the average of current and next step derivatives.
+- Solved using fixed-point iteration:
+```python
+y_next = y_prev + h/2 * (f(t_prev, y_prev) + f(t_next, y_next))
+```
+
+### 🔄 4. Backward Euler with Newton-Raphson
+- Very stable for stiff ODEs.
+- Iteratively solves:
+```python
+y_next = y_prev + h * f(t_next, y_next)
+```
+- Uses numerical Jacobians to perform Newton-Raphson iteration.
+
+---
+
+## 🖼️ Output
+
+The notebook provides **visual plots** for each method:
+- Time-series of **glucose and insulin** concentrations.
+- Comparison between methods.
+
+---
 
 # 🧠 Physics-Informed Neural Network (PINN) for Glucose-Insulin Dynamics
 
