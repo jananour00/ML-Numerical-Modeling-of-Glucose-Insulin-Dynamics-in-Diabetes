@@ -124,8 +124,121 @@ Very robust for chemical kinetics, control systems, and biological models, where
 - Newton-Raphson is used to solve the nonlinear algebraic equation resulting from implicit methods like Backward Euler.
 - Midpoint is a simple second-order method, more accurate than Euler, but less so than RK4.
 
-## 📷 Screenshots <a name = "screenshots" ></a>
 
+# 🧠 Physics-Informed Neural Network (PINN) for Glucose-Insulin Dynamics
+
+---
+
+## 📋 Description
+
+The notebook simulates and predicts **glucose (G)** and **insulin (I)** behavior using a neural network trained not only on data but also on the governing differential equations of the biological system. It addresses four physiological cases involving glucose infusion and pancreatic sensitivity variation.
+
+---
+## 🚀 What’s Inside?
+
+| Section                          | Description                                                                                   |
+|----------------------------------|-----------------------------------------------------------------------------------------------|
+| `Imports`                        | TensorFlow, NumPy, SciPy, and Matplotlib for modeling and plotting.                          |
+| `Parameters & Initial Conditions`| Defines constants like glucose clearance rate, pancreatic sensitivity, and initial states.   |
+| `Case Definitions`               | Four experimental cases simulating different biological conditions (infusion & sensitivity). |
+| `Glucose Infusion Function`      | Models glucose input over time as a step function.                                           |
+| `Smooth Switch Function`         | Implements a sigmoid-based smooth transition to avoid discontinuities.                      |
+| `PINN Model Class`               | A deep neural network using `swish` activations to predict glucose and insulin dynamics.     |
+| `Loss Function`                  | Combines data loss with residuals from differential equations (`dG/dt`, `dI/dt`).            |
+| `Training Loop`                  | Trains the PINN by minimizing the residual-based loss using TensorFlow optimizers.          |
+| `Visualization`                  | Plots predicted glucose-insulin curves for all cases.                                        |
+
+---
+
+## 🔑 Key Concepts
+
+- **Physics-Informed Neural Networks (PINNs):**
+  - Enforce known biological differential equations during training.
+  - Offer better generalization than purely data-driven models.
+
+- **ODE System Modeled:**
+  - Tracks glucose-insulin interaction with parameters like insulin sensitivity (`Bb`) and infusion (`Gt`).
+
+- **Deep Neural Network Architecture:**
+  - 4 hidden layers, 128 neurons each, `swish` activation.
+  - Output layer with 2 neurons: `[Glucose, Insulin]`.
+
+- **Loss Function Design:**
+  - Custom TensorFlow gradients to enforce physical laws.
+  - Uses `tf.GradientTape` to differentiate `G(t)` and `I(t)` over time.
+
+---
+
+## 📊 Cases Modeled
+
+| Case | Description |
+|------|-------------|
+| **1** | Normal patient, no infusion |
+| **2** | Normal patient, with infusion |
+| **3** | Reduced pancreatic sensitivity |
+| **4** | Elevated pancreatic sensitivity |
+
+---
+
+## 🖼️ Preview (Sample Code Snippets)
+
+### Define Glucose Infusion Function
+
+```python
+def glucose_infusion(t, Gt_val):
+    return tf.where(t < 0.5, tf.constant(Gt_val, dtype=tf.float32), tf.constant(0.0, dtype=tf.float32))
+```
+
+### PINN Model Architecture
+
+```python
+class PINN(tf.keras.Model):
+    def __init__(self):
+        super(PINN, self).__init__()
+        self.d1 = tf.keras.layers.Dense(128, activation='swish')
+        self.d2 = tf.keras.layers.Dense(128, activation='swish')
+        self.d3 = tf.keras.layers.Dense(128, activation='swish')
+        self.d4 = tf.keras.layers.Dense(128, activation='swish')
+        self.out = tf.keras.layers.Dense(2, activation=None)
+
+    def call(self, t):
+        x = self.d1(t)
+        x = self.d2(x)
+        x = self.d3(x)
+        x = self.d4(x)
+        return self.out(x)
+```
+
+### Loss Function with Gradients
+
+```python
+def loss_fn_detailed(model, t, Gt_val, Bb_val):
+    with tf.GradientTape(persistent=True) as tape:
+        tape.watch(t)
+        pred = model(t)
+        G = pred[:, 0:1]
+        I = pred[:, 1:2]
+
+    dG_dt = tape.gradient(G, t)
+    dI_dt = tape.gradient(I, t)
+    del tape
+```
+
+---
+
+## 🛠️ Technologies Used
+
+- **TensorFlow 2.x** – for defining and training the PINN.
+- **SciPy** – for solving ODEs using `solve_ivp` (for ground truth comparison).
+- **NumPy & Matplotlib** – for numerical ops and plotting.
+
+---
+
+## 📂 Output
+
+Plots of glucose and insulin vs. time for each of the 4 cases, comparing PINN predictions to reference ODE solutions.
+
+---
 <div name="Screenshots" align="center">
    <img width=60% src="Screenshots/Screenshot_1.png" alt="logo">
    <hr>
