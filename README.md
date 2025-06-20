@@ -353,6 +353,12 @@ The notebook provides **visual plots** for each method:
 
 
 ---
+## 🧪 Citation
+
+If you use this work in your research or learning, consider citing the original PINN paper:
+> M. Raissi, P. Perdikaris, G. E. Karniadakis, *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*. JCP, 2019.
+
+---
 ## Contributors <a name = "contributors"></a>
 <table align="center">
   <tr>
@@ -374,6 +380,52 @@ The notebook provides **visual plots** for each method:
     <br />
     <sub><b>David Amir</b></sub></a>
     </td>
-    
+    <td align="center">
+    <a href="https://github.com/KareemFareed06" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/205330006?v=4" width="100px;" alt="Karim Fareed"/>
+    <br />
+    <sub><b>Kareem Fareed</b></sub></a>
+    </td>
+     <td align="center">
+    <a href="https://github.com/Jananour00" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/193429413?v=4" width="100px;" alt="Jana Nour"/>
+    <br />
+    <sub><b>Jana Nour</b></sub></a>
+    </td>
+      <td align="center">
+    <a href="https://github.com/MohamedSayed-2005" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/191911134?v=4" width="100px;" alt="Mohamed Sayed"/>
+    <br />
+    <sub><b>Mohamed Sayed</b></sub></a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/Jiro75" target="_black">
+       <img src="https://avatars.githubusercontent.com/u/183841405?v=4" width="100px;" alt="Mostafa Hany"/>
+    <br />
+    <sub><b>Mostafa Hany</b></sub></a>
+    </td>
+     <td align="center">
+    <a href="https://github.com/Ibrahim-Abdelqader" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/180881453?v=4" width="100px;" alt="Ibrahim Abdelqader"/>
+    <br />
+    <sub><b>Ibrahim Abdelqader</b></sub></a>
+    </td>
+   <td align="center">
+    <a href="https://github.com/SulaimanAlfozan" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/191874168?v=4" width="100px;" alt="Sulaiman"/>
+    <br />
+    <sub><b>Sulaiman</b></sub></a>
+    </td>
+      <td align="center">
+    <a href="https://github.com/OmegasHyper" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/180775212?v=4" width="100px;" alt="Mohamed Abdelrazek"/>
+    <br />
+    <sub><b>Mohamed Abdelrazek</b></sub></a>
+    </td>
+      <td align="center">
+    <a href="https://github.com/NARDEEN-UX" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/186333337?v=4" width="100px;" alt="Nardeen Ezz"/>
+    <br />
+    <sub><b>Nardeen Ezz</b></sub></a>
   </tr>
  </table>
