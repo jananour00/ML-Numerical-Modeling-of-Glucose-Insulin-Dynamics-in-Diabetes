@@ -138,7 +138,7 @@ This notebook implements and compares **five numerical methods** for solving sys
   </tbody>
 	
 </table>
-
+---
 ## 📊 Key Concepts
 
 | Concept                 | Description |
