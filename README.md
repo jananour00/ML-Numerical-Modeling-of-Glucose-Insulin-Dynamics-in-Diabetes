@@ -261,7 +261,7 @@ Plots of glucose and insulin vs. time for each of the 4 cases, comparing PINN pr
 
 ---
 <div name="Screenshots" align="center">
-   <img width=60% src="Screenshots/1.png" alt="logo">
+   <img width=60% src="PINN picture/1.png" alt="logo">
    <hr>
     <img width=60% src="Screenshots/3.png" alt="logo">
     <hr>
