@@ -54,25 +54,44 @@ a various numerical methods for solving ode's and machine-learning schemes .
 
 
 
-## 🏁 Get Started /Installation <a name = "install"></a>
-1. **Clone the repository**
-```
+
+### 📦 Installation
+
+#### 1. Clone the Repository
+```bash
 git clone https://github.com/Ibrahim-Abdelqader/ML-Numerical-Diabetes-Glucose-ODE-Modeling.git
-```
-2. **Install Visual Studio Code || PyCharm**
-
-
-3. **Open the folder in IDE**
-
-4. **install dependencies**
-```
-pip install 
+cd pinn-glucose-model
 ```
 
-5. **Build the project**
+#### 2. Create a Virtual Environment (Optional but Recommended)
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
 
+#### 3. Install Required Packages
+```bash
+pip install -r requirements.txt
+```
 
-6. **You can run through**
+> If `requirements.txt` is missing, use:
+```bash
+pip install tensorflow numpy matplotlib scipy
+```
+
+### 🧪 Running the Notebook
+
+1. Launch Jupyter:
+```bash
+jupyter notebook
+```
+
+2. Open `PINN.ipynb` in your browser.
+
+3. Run all cells to train the model and visualize glucose-insulin dynamics.
+
+---
+
 
 
 ## 📝 Numerical Methods <a name = "features"></a>
