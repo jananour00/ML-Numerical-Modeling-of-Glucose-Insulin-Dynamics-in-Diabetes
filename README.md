@@ -192,13 +192,6 @@ y_next = y_prev + h * f(t_next, y_next)
 
 ---
 
-## 🖼️ Output
-
-The notebook provides **visual plots** for each method:
-- Time-series of **glucose and insulin** concentrations.
-- Comparison between methods.
-
----
 
 # 🧠 Physics-Informed Neural Network (PINN) for Glucose-Insulin Dynamics
 
