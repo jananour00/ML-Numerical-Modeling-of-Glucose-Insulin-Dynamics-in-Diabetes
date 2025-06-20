@@ -363,69 +363,74 @@ If you use this work in your research or learning, consider citing the original 
 <table align="center">
   <tr>
     <td align="center">
-    <a href="https://github.com/hamdy-cufe-eng" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/183446123?s=96&v=4" width="100px;" alt="Hamdy Ahmed"/>
-    <br />
-    <sub><b>Hamdy Ahmed</b></sub></a>
+      <a href="https://github.com/hamdy-cufe-eng" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/183446123?s=96&v=4" width="100px;" alt="Hamdy Ahmed"/><br />
+        <sub><b>Hamdy Ahmed</b></sub>
+      </a>
     </td>
     <td align="center">
-    <a href="https://github.com/Karim-Mohamed-Elsayed" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/183163245?v=4" width="100px;" alt="Karim Mohamed"/>
-    <br />
-    <sub><b>Karim Mohamed</b></sub></a>
-    </td>
-     <td align="center">
-    <a href="https://github.com/David-Amir-18" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/183446535?v=4" width="100px;" alt="David Amir"/>
-    <br />
-    <sub><b>David Amir</b></sub></a>
+      <a href="https://github.com/Karim-Mohamed-Elsayed" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/183163245?v=4" width="100px;" alt="Karim Mohamed"/><br />
+        <sub><b>Karim Mohamed</b></sub>
+      </a>
     </td>
     <td align="center">
-    <a href="https://github.com/KareemFareed06" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/205330006?v=4" width="100px;" alt="Karim Fareed"/>
-    <br />
-    <sub><b>Kareem Fareed</b></sub></a>
-    </td>
-     <td align="center">
-    <a href="https://github.com/Jananour00" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/193429413?v=4" width="100px;" alt="Jana Nour"/>
-    <br />
-    <sub><b>Jana Nour</b></sub></a>
-    </td>
-      <td align="center">
-    <a href="https://github.com/MohamedSayed-2005" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/191911134?v=4" width="100px;" alt="Mohamed Sayed"/>
-    <br />
-    <sub><b>Mohamed Sayed</b></sub></a>
+      <a href="https://github.com/David-Amir-18" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/183446535?v=4" width="100px;" alt="David Amir"/><br />
+        <sub><b>David Amir</b></sub>
+      </a>
     </td>
     <td align="center">
-    <a href="https://github.com/Jiro75" target="_black">
-       <img src="https://avatars.githubusercontent.com/u/183841405?v=4" width="100px;" alt="Mostafa Hany"/>
-    <br />
-    <sub><b>Mostafa Hany</b></sub></a>
+      <a href="https://github.com/KareemFareed06" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/205330006?v=4" width="100px;" alt="Kareem Fareed"/><br />
+        <sub><b>Kareem Fareed</b></sub>
+      </a>
     </td>
-     <td align="center">
-    <a href="https://github.com/Ibrahim-Abdelqader" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/180881453?v=4" width="100px;" alt="Ibrahim Abdelqader"/>
-    <br />
-    <sub><b>Ibrahim Abdelqader</b></sub></a>
+    <td align="center">
+      <a href="https://github.com/Jananour00" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/193429413?v=4" width="100px;" alt="Jana Nour"/><br />
+        <sub><b>Jana Nour</b></sub>
+      </a>
     </td>
-   <td align="center">
-    <a href="https://github.com/SulaimanAlfozan" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/191874168?v=4" width="100px;" alt="Sulaiman"/>
-    <br />
-    <sub><b>Sulaiman</b></sub></a>
-    </td>
-      <td align="center">
-    <a href="https://github.com/OmegasHyper" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/180775212?v=4" width="100px;" alt="Mohamed Abdelrazek"/>
-    <br />
-    <sub><b>Mohamed Abdelrazek</b></sub></a>
-    </td>
-      <td align="center">
-    <a href="https://github.com/NARDEEN-UX" target="_black">
-    <img src="https://avatars.githubusercontent.com/u/186333337?v=4" width="100px;" alt="Nardeen Ezz"/>
-    <br />
-    <sub><b>Nardeen Ezz</b></sub></a>
   </tr>
- </table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/MohamedSayed-2005" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/191911134?v=4" width="100px;" alt="Mohamed Sayed"/><br />
+        <sub><b>Mohamed Sayed</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Jiro75" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/183841405?v=4" width="100px;" alt="Mostafa Hany"/><br />
+        <sub><b>Mostafa Hany</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Ibrahim-Abdelqader" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/180881453?v=4" width="100px;" alt="Ibrahim Abdelqader"/><br />
+        <sub><b>Ibrahim Abdelqader</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/SulaimanAlfozan" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/191874168?v=4" width="100px;" alt="Sulaiman"/><br />
+        <sub><b>Sulaiman</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/OmegasHyper" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/180775212?v=4" width="100px;" alt="Mohamed Abdelrazek"/><br />
+        <sub><b>Mohamed Abdelrazek</b></sub>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/NARDEEN-UX" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/186333337?v=4" width="100px;" alt="Nardeen Ezz"/><br />
+        <sub><b>Nardeen Ezz</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
