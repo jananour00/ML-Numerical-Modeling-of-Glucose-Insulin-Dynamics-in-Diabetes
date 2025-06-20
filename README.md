@@ -79,33 +79,40 @@ pip install
 <table>
   <thead>
     <tr>
-      <th>Feature</th>
+      <th>Method</th>
       <th>Description</th>
-      <th>Status</th>
+      <th>Book</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Login</td>
-      <td>User can login with email/password</td>
-      <td>✅ Working</td>
+      <td>ISODA</td>
+      <td>A stiff ODE solver using adaptive step-size control and automatic method switching (e.g., BDF and Adams). Often used in real-world stiff ODE systems.</td>
+      <td>✅</td>
+    </tr>
+	     <tr>
+      <td>Classical 4th-order Runge-Kutta method</td>
+      <td>Widely used, fixed-step solver. Computes intermediate slopes (k1–k4) to estimate the solution with good accuracy.</td>
+      <td>✅</td>
     </tr>
     <tr>
-      <td>Signup</td>
-      <td>Register new users</td>
-      <td>✅ Working</td>
+      <td>Newton-Raphson with Backward Euler</td>
+      <td>A first-order implicit method solving nonlinear equations at each step using Newton-Raphson. Very stable for stiff problems but requires Jacobian.</td>
+      <td>❌</td>
     </tr>
     <tr>
-      <td>Dark Mode</td>
-      <td>Toggle between dark/light themes</td>
-      <td>🛠️ In Progress</td>
+      <td>Trapezoidal</td>
+      <td>An implicit method averaging the slope at the current and next time steps. It’s A-stable and more suited for moderately stiff problems.</td>
+      <td>❌</td>
     </tr>
-    <tr>
-      <td>Chat</td>
-      <td>Real-time messaging</td>
-      <td>❌ Not Started</td>
+ 
+<tr>
+      <td>Midpoint</td>
+      <td>A second-order explicit method that estimates midpoint to improve over Euler’s method. More accurate but still not suitable for stiff equations.</td>
+      <td>❌</td>
     </tr>
   </tbody>
+	
 </table>
 - Applying High/low pass filters
 - Viewing Histogram by double clicking the image
