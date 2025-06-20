@@ -103,7 +103,7 @@ jupyter notebook
 ---
 
 
-# 📘 Numerical Methods for Solving ODEs in Glucose-Insulin Modeling <a name = "features"></a>
+# 📘 Numerical Methods for Solving ODEs in Glucose-Insulin Modeling 
 This notebook implements and compares **five numerical methods** for solving systems of ordinary differential equations (ODEs) in the context of **glucose-insulin dynamics**. Each method is applied to a system of biological ODEs with time-varying input and conditional behavior.
 
 ---
