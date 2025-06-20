@@ -302,22 +302,57 @@ def loss_fn_detailed(model, t, Gt_val, Bb_val):
 
 ---
 
-## 📂 Output
+## 📂 Output of PINN
 
 Plots of glucose and insulin vs. time for each of the 4 cases, comparing PINN predictions to reference ODE solutions.
 
 ---
 <div name="Screenshots" align="center">
-   <img width=60% src="PINN picture/1.png" alt="logo">
+   <img width=60% src="PINN_Screenshots/1.png" alt="logo">
    <hr>
-    <img width=60% src="Screenshots/3.png" alt="logo">
-    <hr>
+	
+   <img width=60% src="PINN_Screenshots/2.png" alt="logo">
   
-   <img width=60% src="Screenshots/2.png" alt="logo">
-   <img width=60% src="Screenshots/4.png" alt="logo">
+   <hr>
+          <img width=60% src="PINN_Screenshots/3.png" alt="logo">
+    <hr>
+   <img width=60% src="PINN_Screenshots/4.png" alt="logo">
    <hr>
 </div>
 
+---
+
+## 📂 Output of methods
+
+The notebook provides **visual plots** for each method:
+- Time-series of **glucose and insulin** concentrations.
+- Comparison between methods.
+
+div name="Screenshots" align="center">
+   <img width=60% src="Methods_Screenshots/Screenshot_1.png" alt="logo">
+   <hr>
+	
+   <img width=60% src="Methods_Screenshots/Screenshot_2.png" alt="logo">
+  
+   <hr>
+          <img width=60% src="Methods_Screenshots/Screenshot_3.png" alt="logo">
+    <hr>
+   <img width=60% src="Methods_Screenshots/Screenshot_4.png" alt="logo">
+   <hr>
+   <img width=60% src="Methods_Screenshots/Screenshot_5.png" alt="logo">
+   <hr>
+	
+   <img width=60% src="Methods_Screenshots/Screenshot_6.png" alt="logo">
+  
+   <hr>
+          <img width=60% src="Methods_Screenshots/Screenshot_7.png" alt="logo">
+    <hr>
+   <img width=60% src="Methods_Screenshots/Screenshot_8.png" alt="logo">
+   <hr>
+</div>
+
+
+---
 ## Contributors <a name = "contributors"></a>
 <table align="center">
   <tr>
