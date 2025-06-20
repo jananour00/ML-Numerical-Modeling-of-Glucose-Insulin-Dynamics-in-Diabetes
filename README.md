@@ -114,16 +114,16 @@ pip install
   </tbody>
 	
 </table>
-- Applying High/low pass filters
-- Viewing Histogram by double clicking the image
-- Applying Brightness
-- Applying Contrast with 4 different methods
-- Calculating SNR /CNR
-- Zooming up to 4x !
-- Applying multiple zoom methods ( **Nearest Neighbor** , **Linear** , **Bi-Linear**, **Cubic** ) 
-- Applying multiple noise techniques ( **Poisson Noise** , **Gaussian Noise** , **Salt & Pepper Noise** )
-- Applying multiple denoising techniques ( **Median Filter** , **Gaussian Filter** , **Non-Local means Filter** )
-- Modern Flat-UI 
+🧠 Key Notes:
+- ISODA Automatically chooses the most efficient and stable solver,
+Very robust for chemical kinetics, control systems, and biological models, where stiffness often arises unpredictably.
+
+- RK4 is a good general-purpose method when high accuracy is needed, and stiffness is not a concern.
+- Trapezoidal rule is often seen as a balance between accuracy and stability.
+
+- Newton-Raphson is used to solve the nonlinear algebraic equation resulting from implicit methods like Backward Euler.
+
+- Midpoint is a simple second-order method, more accurate than Euler, but less so than RK4.
 
 ## 📷 Screenshots <a name = "screenshots" ></a>
 
