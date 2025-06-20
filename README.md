@@ -255,7 +255,8 @@ The notebook simulates and predicts **glucose (G)** and **insulin (I)** behavior
 
 ---
 
-##  Preview (Sample Code Snippets)
+<h2 id="preview-sample-code-snippets">🖼️ Preview (Sample Code Snippets)</h2>
+
 
 ### Define Glucose Infusion Function
 
@@ -301,7 +302,7 @@ def loss_fn_detailed(model, t, Gt_val, Bb_val):
 
 ---
 
-## 🛠️ Technologies Used
+<h2 id="technologies-used">🛠️ Technologies Used</h2>
 
 - **TensorFlow 2.x** – for defining and training the PINN.
 - **SciPy** – for solving ODEs using `solve_ivp` (for ground truth comparison).
