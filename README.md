@@ -28,7 +28,7 @@
         <li><a href="#-built-using">Built Using</a></li>
       </ul>
     </li>
-    <li><a href="#installation">Installation</a></li>
+    <li><a href="#-installation">Installation</a></li>
     <li><a href="#-running-the-notebook">Running the Notebook</a></li>
     <li><a href="#-numerical-methods-for-solving-odes-in-glucose-insulin-modeling">Numerical Methods for Solving ODEs</a></li>
     <li><a href="#-whats-inside">What’s Inside (Methods)</a></li>
@@ -39,8 +39,8 @@
     <li><a href="#-whats-inside-1">What’s Inside (PINN)</a></li>
     <li><a href="#-key-concepts-1">Key Concepts (PINN)</a></li>
     <li><a href="#-cases-modeled">Cases Modeled</a></li>
-    <li><a href="#-preview-sample-code-snippets">Preview (Sample Code)</a></li>
-    <li><a href="#-technologies-used">Technologies Used</a></li>
+    <li><a href="#preview-sample-code-snippets">Preview (Sample Code)</a></li>
+    <li><a href="#technologies-used">Technologies Used</a></li>
     <li><a href="#-output-of-pinn">Output of PINN</a></li>
     <li><a href="#-output-of-methods">Output of Methods</a></li>
     <li><a href="#-citation">Citation</a></li>
