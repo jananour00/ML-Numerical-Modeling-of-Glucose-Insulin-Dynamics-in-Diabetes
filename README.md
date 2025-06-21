@@ -190,6 +190,18 @@ y_next = y_prev + h * f(t_next, y_next)
 ```
 - Uses numerical Jacobians to perform Newton-Raphson iteration.
 
+### ➕ 5. Midpoint Method (Explicit, 2nd Order)
+
+- A second-order Runge-Kutta method (also called RK2).
+- Improves accuracy over Forward Euler by estimating the derivative at the midpoint of the interval.
+- More stable than Euler, but not suitable for stiff systems.
+
+```python
+for i in range(n):
+    k1 = h * f(t[i], y[i], params)
+    k2 = h * f(t[i] + h / 2, y[i] + k1 / 2, params)
+    y[i+1] = y[i] + k2
+
 ---
 
 
@@ -349,6 +361,12 @@ The notebook provides **visual plots** for each method:
           <img width=60% src="Methods_Screenshots/Screenshot_7.png" alt="logo">
     <hr>
    <img width=60% src="Methods_Screenshots/Screenshot_8.png" alt="logo">
+   <hr>
+      <hr>
+   <img width=60% src="Methods_Screenshots/Screenshot_9.png" alt="logo">
+   <hr>
+      <hr>
+   <img width=60% src="Methods_Screenshots/Screenshot_10.png" alt="logo">
    <hr>
 </div>
 
