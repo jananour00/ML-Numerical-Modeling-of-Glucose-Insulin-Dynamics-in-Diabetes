@@ -1,0 +1,644 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref} % Put this in your preamble if not already present
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Glucose-Insulin Dynamics Modeling: A Comparative Study of Numerical Methods and Physics-Informed Neural Networks\\
+
+\thanks{Identify applicable funding agency here. If none, delete this.}
+}
+
+\author{
+  \begin{minipage}{0.9\textwidth}
+    \centering
+    Jana Gamal $|$ 91240240\\
+    Nardeen Ezz $|$ 91240806\\
+    David Amir $|$ 91240283\\
+    Kareem Fareed $|$ 91240575\\
+    Kareem Mohammed Elsayed $|$ 91240578\\
+    Hamdy Ahmed $|$ 91240272\\
+    Mohammed Abdulrazak $|$ 91240670\\
+    Mohammed Elsayed $|$ 91240664\\
+    Mostafa Hany $|$ 91240766\\
+    Soliman Fozan $|$ 9240002\\
+    Ibrahim AbdelQader $|$ 91240056
+  \end{minipage}
+}
+
+\maketitle 
+
+\begin{abstract}
+The Glucose Tolerance Test (GTT) is a clinical procedure used to evaluate how efficiently the body regulates blood glucose, playing a vital role in diagnosing diabetes mellitus and insulin resistance. This study presents a dual approach to modeling glucose-insulin dynamics: a traditional numerical solution based on ordinary differential equations (ODEs), and a data-driven machine learning (ML) solution. The ODE model—based on the work of Schiesser—is implemented to simulate glucose and insulin concentrations following glucose intake, using numerical methods including Euler, Trapezoidal, RK45, and lsoda solvers. In parallel, a Physics-Informed Neural Network (PINN) is trained on the simulated glucose data to learn the underlying glucose-insulin relationship. Comparative analysis demonstrates that the ML-predicted curves closely track the ODE solutions. This hybrid framework not only validates the PINN approach against established ODE solvers but also demonstrates the feasibility of integrating physics-based modeling and ML for adaptive glucose monitoring.
+\end{abstract}
+
+
+\begin{IEEEkeywords}
+Glucose Tolerance Test (GTT), Ordinary Differential Equations (ODEs), lsoda Solver, RK45, Trapezoidal, Euler, Physics-Informed Neural Networks (PINNs), Glucose-Insulin Dynamics, Machine Learning, Biomedical Engineering.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Diabetes mellitus is a widespread metabolic disorder marked by hyperglycemia due to the body's inability to properly produce or respond to insulin. Globally, it affects over 400 million individuals and is a leading cause of heart disease, neuropathy, and renal failure. One common diagnostic tool for assessing insulin sensitivity and glucose metabolism is the Glucose Tolerance Test (GTT), where blood glucose levels are measured over time after a glucose-rich drink is ingested.
+
+Mathematical modeling of glucose-insulin dynamics offers insight into the physiological processes behind glucose regulation. In this context, ordinary differential equations (ODEs) are useful tools for simulating glucose intake, absorption, and insulin response. Traditional ODE solvers such as Euler’s method, Trapezoidal integration, RK45 (Runge-Kutta), and lsoda (Livermore Solver for Ordinary Differential Equations) provide numerical solutions under different parameter conditions.
+
+However, in recent years, data-driven models—particularly machine learning (ML) methods—have emerged as powerful tools for capturing dynamic behavior in biomedical systems. Among them, Physics-Informed Neural Networks (PINNs) uniquely combine physical laws, in the form of differential equations, with neural network learning, offering a hybrid framework that balances data efficiency and interpretability.
+
+In this project, we implement and compare these two approaches:
+\begin{itemize}
+    \item A classical ODE-based model to simulate glucose-insulin dynamics under different physiological cases (normal, prediabetic, diabetic).
+    \item A machine learning model using a PINN to approximate the same system by minimizing the loss function based on how well the outputs satisfy the ODE 
+\end{itemize}
+
+The comparative analysis provides insight into the effectiveness of ML models in biomedical simulations, especially when aligned with physical principles.
+
+\section{Mathematical Model}
+
+\subsection{Physiological Overview}
+
+The glucose tolerance test (GTT) evaluates the body’s ability to regulate blood glucose through the secretion and action of insulin. The physiological process is governed by two key mechanisms:
+
+\begin{enumerate}
+    \item \textbf{Glucose dynamics} in the extracellular fluid — affected by infusion, hepatic glucose production, renal clearance, and insulin-mediated uptake.
+    \item \textbf{Insulin dynamics} — governed by pancreatic secretion (stimulated by elevated glucose levels) and first-order metabolic clearance.
+\end{enumerate}
+
+We model this as a coupled system of nonlinear ordinary differential equations (ODEs), representing the glucose concentration $G(t)$ and insulin concentration $I(t)$ over time $t$, based on the model developed by Randall and implemented by Schiesser \cite{schiesser}.
+
+\subsection{Glucose Dynamics}
+
+The glucose mass balance is described as:
+\begin{multline}
+    \text{Rate of glucose change} = \text{Hepatic production} + \text{Infusion} \\
+    - \text{Insulin-mediated uptake} - \text{First-order loss} - \text{Renal removal}
+\end{multline}
+
+This yields the following piecewise-defined ODE:
+
+For $G(t) < G_k$ (below renal threshold):
+
+\begin{equation}
+    C_g \frac{dG}{dt} = Q + \mathrm{In}(t) - G_g I G - D_d G
+    \label{eq:glucose_below_threshold}
+\end{equation}
+
+For $G(t) \geq G_k$ (above renal threshold):
+
+\begin{equation}
+    C_g \frac{dG}{dt} = Q + \mathrm{In}(t) - G_g I G - D_d G - M_u (G - G_k)
+    \label{eq:glucose_above_threshold}
+\end{equation}
+
+\noindent \textbf{Where}:
+
+\begin{itemize}
+    \item $G(t)$: glucose concentration (mg/100 ml)
+    \item $C_g = \frac{E_x}{100}$: glucose capacitance (number of 100 ml volumes)
+    \item $Q$: hepatic glucose production rate (mg/hr)
+    \item $\mathrm{In}(t)$: time-dependent glucose infusion (mg/hr)
+    \item $G_g$: insulin-glucose uptake coefficient
+    \item $D_d$: first-order glucose decay rate
+    \item $M_u$: renal clearance rate (active when $G \geq G_k$)
+    \item $G_k$: renal glucose threshold
+\end{itemize}
+
+The system is nonlinear due to the bilinear term $G_g I G$, reflecting insulin-stimulated glucose utilization.
+
+\subsection{Insulin Dynamics}
+
+The insulin balance is described as:
+\begin{equation}
+\begin{split}
+\text{Rate of insulin change} &= - \text{First-order degradation} \\
+                              &\quad + \text{Pancreatic release}
+\end{split}
+\end{equation}
+
+This leads to a second piecewise-defined ODE:
+
+For $G(t) < G_0$ (below pancreatic stimulation threshold):
+
+\begin{equation}
+    C_i \frac{dI}{dt} = -A_a I
+    \label{eq:insulin_below_threshold}
+\end{equation}
+
+For $G(t) \geq G_0$:
+
+\begin{equation}
+    C_i \frac{dI}{dt} = -A_a I + B_b (G - G_0)
+    \label{eq:insulin_above_threshold}
+\end{equation}
+
+\noindent \textbf{Where}:
+
+\begin{itemize}
+    \item $I(t)$: insulin concentration (mg/100 ml)
+    \item $C_i = \frac{E_x}{100}$: insulin capacitance
+    \item $A_a$: insulin degradation rate
+    \item $G_0$: pancreatic glucose stimulation threshold
+    \item $B_b$: insulin release rate coefficient
+\end{itemize}
+
+This reflects a \textit{stimulus-response} behavior where pancreatic insulin release is triggered when glucose exceeds a threshold.
+
+\subsection{Assumptions and Properties}
+
+\begin{itemize}
+    \item All parameters are positive and time-invariant.
+    \item The glucose infusion function $\mathrm{In}(t)$ is typically nonzero during the first hour and zero thereafter.
+    \item Units are consistent (mg/hr) and time is measured in hours.
+    \item The coupled ODE system is nonlinear, piecewise-defined, and time-dependent, precluding an analytical solution in general.
+\end{itemize}
+
+\subsection{Initial Conditions}
+
+To numerically solve the model, initial conditions are given by:
+
+\begin{equation}
+    G(0) = G_0^{init}, \quad I(0) = I_0^{init}
+\end{equation}
+
+These are typically baseline physiological measurements before glucose infusion.
+\section{Literature Review}
+
+This section reviews foundational and recent studies related to glucose-insulin modeling and diabetes prediction, focusing on both mathematical formulations and artificial intelligence-based approaches. The selected works span explicit ordinary differential equation (ODE)-based models, comprehensive modeling surveys, and modern machine learning techniques applied to glucose tolerance test data. Together, they provide insight into the evolution of predictive modeling in diabetes research.
+
+\subsection{Mathematical Modeling of Glucose-Insulin Dynamics}
+
+Fessel \textit{et al.}~\cite{fessel2016} present an analytical solution to the minimal model of glucose-insulin regulation, a well-established framework based on coupled ODEs. This model is commonly used to interpret intravenous glucose tolerance test (IVGTT) data. The authors propose a methodology enabling separate analysis of glucose and insulin dynamics, which improves the identifiability of physiological parameters. This allows the extraction of patient-specific metrics, such as insulin sensitivity and glucose effectiveness, from clinical data, thus enhancing the model’s diagnostic relevance and theoretical understanding of glucose regulation.
+
+
+
+
+Makroglou \textit{et al.}~\cite{makroglou2006} provide a comprehensive survey of mathematical models of the glucose-insulin system, reviewing ODE-based models alongside more advanced formulations including delay differential equations (DDEs), partial differential equations (PDEs), and integro-differential equations. They connect these mathematical models to physiological phenomena such as hormonal feedback mechanisms, glucose oscillations, and meal responses. The paper also catalogs available computational tools for simulation and parameter estimation, underscoring the critical role of computational modeling in both diabetes research and clinical applications.
+
+\subsection{Machine Learning Approaches for Diabetes Prediction}
+
+Abbas \textit{et al.}~\cite{abbas2019} propose a machine learning pipeline employing Support Vector Machines (SVMs) to predict long-term Type 2 diabetes mellitus (T2DM) risk. Using oral glucose tolerance test (OGTT) data and demographic information from 1,492 subjects in the San Antonio Heart Study, the authors apply feature selection techniques and demonstrate that plasma glucose-derived features are the most predictive of future diabetes onset. Their SVM model achieved high classification accuracy (96.8\%) and sensitivity (80.1\%), demonstrating the promise of well-designed feature extraction combined with machine learning for early diabetes risk stratification.
+
+Kaul and Kumar~\cite{kaul2020} present a systematic review of AI techniques for diabetes prediction, evaluating multiple classifiers including genetic algorithms, decision trees, random forests, logistic regression, SVMs, and Naive Bayes. Their analysis, based on datasets such as the Pima Indians Diabetes Database (PIDD), found genetic algorithms consistently outperform other classifiers. They also discuss challenges such as data quality, feature selection, and model robustness, providing valuable guidance for applying machine learning to diabetes-related problems.
+
+\subsection{Comparative Summary}
+
+\begin{table}[htbp]
+\caption{Summary of Reviewed Literature}
+\centering
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{2.2cm}|p{1.6cm}|}
+\hline
+\textbf{Paper (Authors, Year)} & \textbf{Modeling Approach} & \textbf{Methodology / Algorithms} & \textbf{Key Findings / Contribution} \\
+\hline
+Fessel \textit{et al.}, 2016~\cite{fessel2016} & Mathematical & Analytical solution to ODE-based minimal model & Enables separate glucose and insulin analysis; improves parameter estimation \\
+\hline
+Makroglou \textit{et al.}, 2006~\cite{makroglou2006} & Mathematical (Survey) & Survey of ODEs, DDEs, PDEs; computational tools & Links physiology to models; reviews computational tools \\
+\hline
+Abbas \textit{et al.}, 2019~\cite{abbas2019} & Machine Learning & SVM with feature selection & Highlights glucose features as key predictors; achieves high accuracy \\
+\hline
+Kaul \& Kumar, 2020~\cite{kaul2020} & Machine Learning & Comparative ML classifiers & Genetic algorithms perform best; discusses ML challenges in medical context \\
+\hline
+\end{tabular}
+\label{tab:literature_summary}
+\end{table}
+\section{Numerical-methods}
+
+\subsection{LSODA-METHOD}
+
+The LSODA method is a highly robust and adaptive numerical integrator for systems of ordinary differential equations (ODEs), widely used in scientific computing. It is known for its ability to automatically switch between non-stiff (Adams-Moulton) and stiff (Backward Differentiation Formula - BDF) methods as needed, based on the stiffness of the ODE system. 
+The LSODA method, accessed via \texttt{scipy.integrate.solve\_ivp}, is an adaptive, variable-step solver that automatically detects and handles stiffness in ODE systems.
+
+\begin{itemize}
+    \item \textbf{Initialization}: The solver is provided with initial conditions $y_0 = [G(0), I(0)]$, the total time span for simulation (e.g., $t \in [0, 12]$ hours), and a set of desired output time points. Relative and absolute error tolerances (e.g., $10^{-6}$) are set to control accuracy.
+    \item \textbf{Internal Stepping (Adaptive \& Automatic)}: LSODA begins at $t=0$ with $y_0$. It internally chooses an appropriate initial step size. At each step, it calculates derivatives using the \texttt{glucose\_insulin\_ode} function. It estimates the local error and dynamically adjusts its step size to meet the specified tolerances.
+    \item \textbf{Stiffness Handling}: Crucially, LSODA continuously monitors the system's stiffness. If it detects stiffness, it automatically switches from an explicit Adams-Moulton method to a more stable and efficient implicit Backward Differentiation Formula (BDF) method, and can switch back if stiffness subsides.
+    \item \textbf{Output Generation}: As integration proceeds, LSODA calculates the solution at the specified output time points either directly or by interpolation.
+    \item \textbf{Termination}: The process continues until the final time is reached, returning the solution arrays for G and I and the total number of ODE function calls.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{image1.png} 
+    \caption{Glucose Concentration $G(t)$ using LSODA across different cases.}
+    \label{fig:lsoda_glucose}
+\end{figure}
+
+
+\subsection{Newton-Raphson with Backward Euler-Method}
+
+The Backward Euler method is an implicit, first-order numerical integration technique for ODEs known for its unconditional stability, which makes it well-suited for stiff problems. For nonlinear ODEs, applying the Backward Euler method results in a system of nonlinear algebraic equations that must be solved at each time step. The Newton-Raphson method is employed to iteratively find the solution to this nonlinear system. It leverages the function's value and its Jacobian matrix to converge efficiently to the root.
+
+This is an implicit, fixed-step method that leverages the unconditional stability of Backward Euler for ODE integration and the iterative power of Newton-Raphson for solving the resulting nonlinear algebraic equations at each time step.
+
+\begin{itemize}
+    \item \textbf{Initialization}: Initial conditions $y_{\text{current}} = [G(0), I(0)]$ are set at $t_{\text{current}} = 0$. A fixed outer output time step (e.g., 0.25 hours) and a fixed inner integration step ($h$, e.g., 0.025 hours) are defined.
+    \item \textbf{Outer Loop (Output Time Points)}: The simulation iterates through each desired output time point $t_{\text{target}}$.
+    \item \textbf{Inner Loop (Fixed-Step Integration)}: From $t_{\text{current}}$ to $t_{\text{target}}$, the solver takes multiple fixed steps of size $h$.
+    \item \textbf{Backward Euler Step}: At each step from $t_{\text{current}}$ to $t_{\text{next}} = t_{\text{current}} + h$:
+    \begin{itemize}
+        \item \textbf{Formulate Implicit Equation}: The Backward Euler formula $y_{\text{next}} = y_{\text{current}} + h \cdot f(t_{\text{next}}, y_{\text{next}})$ is rearranged into a root-finding problem $F(y_{\text{next}}) = y_{\text{next}} - y_{\text{current}} - h \cdot f(t_{\text{next}}, y_{\text{next}}) = 0$.
+        \item \textbf{Newton-Raphson Iteration}: An iterative process (using \texttt{fsolve} internally) solves $F(y_{\text{next}})=0$. In each iteration, $F(y_{\text{next}})$ is evaluated (calling \texttt{glucose\_insulin\_ode}), a Jacobian matrix is computed, and a linear system is solved for a correction $\Delta y$. $y_{\text{next}}$ is updated with $\Delta y$ until convergence criteria (e.g., $||\Delta y|| < 10^{-8}$) or maximum iterations are met.
+    \end{itemize}
+    \item \textbf{Store and Print}: Once $t_{\text{target}}$ is reached, the calculated solution is stored and printed.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{image2.png} 
+    \caption{Glucose Concentration $G(t)$ using Newton-Raphson with Backward Euler across different cases.}
+    \label{fig:be_glucose}
+\end{figure}
+
+
+
+\subsection{Trapezoidal-Method}
+
+The Trapezoidal method is an implicit, second-order accurate numerical integration scheme for ODEs. It approximates the integral by averaging the derivatives at the current and next time steps. Its second-order accuracy generally makes it more precise than Backward Euler for a given step size.
+
+The Trapezoidal method is an implicit, fixed-step, second-order accurate numerical integration scheme. It averages the derivatives at the current and next time steps and also requires an iterative solver for nonlinear ODEs.
+
+\begin{itemize}
+    \item \textbf{Initialization}: Similar to Backward Euler, initial conditions and fixed outer/inner time steps are set.
+    \item \textbf{Outer and Inner Loops}: The simulation progresses through outer output time points and takes multiple fixed inner steps of size $h$.
+    \item \textbf{Trapezoidal Step}: At each step from $t_{\text{current}}$ to $t_{\text{next}} = t_{\text{current}} + h$:
+    \begin{itemize}
+        \item \textbf{Formulate Implicit Equation}: The Trapezoidal formula $y_{\text{next}} = y_{\text{current}} + \frac{h}{2} [f(t_{\text{current}}, y_{\text{current}}) + f(t_{\text{next}}, y_{\text{next}})]$ 
+        \item \textbf{Nonlinear Solver}: \texttt{fsolve} is used iteratively. In each iteration, $F(y_{\text{next}})$ is evaluated. This requires \textit{two} calls to \texttt{glucose\_insulin\_ode} (one for $f(t_{\text{current}}, y_{\text{current}})$ and one for $f(t_{\text{next}}, y_{\text{next}})$) per iteration of \texttt{fsolve}. The iteration proceeds until convergence or maximum calls are met.
+    \end{itemize}
+    \item \textbf{Store and Print}: Solutions are stored and printed at the specified output time points.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{image3.png}
+    \caption{Glucose Concentration $G(t)$ using Trapezoidal Method across different cases.}
+    \label{fig:trap_glucose}
+\end{figure}
+
+
+
+
+\subsection{classical 4th-order Runge-Kutta-Method}
+
+The RK45 method is an explicit, adaptive-step-size numerical integration technique commonly used for non-stiff ODEs. It achieves high accuracy (typically 4th or 5th order) by evaluating the derivative function at multiple intermediate points within each time step and computing a weighted average to determine the next step. While explicit methods are computationally less expensive per step (as they do not require solving nonlinear algebraic equations), they can be conditionally stable, requiring smaller step sizes for stiff problems.
+
+The RK45 method, as implemented, is an explicit, fixed-step numerical integration technique. It achieves high accuracy by evaluating the derivative function at multiple intermediate points within each time step.
+
+\begin{itemize}
+    \item \textbf{Initialization}: Initial conditions are set at $t_{\text{current}} = 0$. Fixed outer output time steps and fixed inner integration steps ($h_{\text{inner}}$) are defined.
+    \item \textbf{Outer and Inner Loops}: The simulation progresses through outer output time points and takes multiple fixed inner steps of size $h_{\text{inner}}$.
+    \item \textbf{RK45 Step}: At each step from $t_{\text{current}}$ to $t_{\text{next}} = t_{\text{current}} + h_{\text{inner}}$:
+    \begin{itemize}
+        \item \textbf{Compute Six K-values}: The method calculates six intermediate slopes ($k_1$ through $k_6$) by evaluating the \texttt{glucose\_insulin\_ode} function at different intermediate points (both time and state) within the current time step. Each $k$-value computation requires one call to \texttt{glucose\_insulin\_ode}.
+        \item \textbf{Combine K-values for Solution}: A weighted average of these $k$-values is computed to determine the 5th-order accurate solution at $y_{\text{next}}$. A 4th-order estimate is also calculated, with their difference providing an error estimate, though not used for step adaptation in this fixed-step version.
+    \end{itemize}
+    \item \textbf{Store and Print}: Solutions are stored and printed at the specified output time points.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{image4.png}
+    \caption{Glucose Concentration $G(t)$ using RK45 across different cases.}
+    \label{fig:rk45_glucose}
+\end{figure}
+
+\vspace{0.5em}
+\noindent \small \textit{Note: Relative errors are calculated against the LSODA solution. N/A for LSODA as it is the reference. Errors are filtered to exclude the initial time point and instances where the LSODA reference is zero/near zero.}
+\vspace{0.5em}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{Comparison G(t).png} % Comparison G(t)
+    \caption{Extracellular Glucose G(t) - Comparative Trajectories of All Methods Across Cases.}
+    \label{fig:comparison_glucose}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{Comparison I(t).png} % Comparison I(t)
+    \caption{Extracellular Insulin I(t) - Comparative Trajectories of All Methods Across Cases.}
+    \label{fig:comparison_insulin}
+\end{figure}
+
+\section{Deep  Learning-Based Modeling of GTT}
+
+To complement the traditional ODE-based simulation of glucose and insulin dynamics, a machine learning approach was implemented using a Physics-Informed Neural Network (PINN).
+PINN is a neural network that learns directly from the governing physical laws of the system. This method embeds the system of differential equations directly into the loss function of the neural network, allowing the model to learn solutions that are physically consistent.
+To solve the ODE system, we implemented a PINN using TensorFlow. The PINN model incorporates the ODEs into the training loss to enforce physical consistency throughout the learning process. The model takes time 
+$t$ as input and outputs $G(t)$ and $I(t)$, representing glucose and insulin concentrations, respectively. The results validate the use of PINNs in simulating glucose-insulin dynamics with high fidelity, relying solely on the underlying system dynamics.
+\vspace{0.3cm}
+\subsection{Neural Network Architecture}
+
+\textbf{Neural Network Architecture:}
+\begin{itemize}
+    \item \textbf{Input layer:} $t \in \mathbb{R}$ (time as a single continuous input)
+    \item \textbf{Hidden layers:} 4 fully connected layers with 128 units each, using the Swish activation function
+    \item \textbf{Output layer:} $[G(t), I(t)]$, representing glucose and insulin concentrations
+\end{itemize}
+
+\textbf{Loss Function:}
+
+The model is trained by minimizing a composite loss function that combines the ODE residuals and initial condition constraints:
+
+\[
+\mathcal{L}_{\text{total}} = \text{MSE}_{\text{ODE}} + 100 \cdot \text{MSE}_{\text{IC}}
+\]
+
+Where:
+\begin{itemize}
+    \item $\text{MSE}_{\text{ODE}}$ is the mean squared error of the ODE residuals:
+    \[
+    \left( \frac{dG}{dt} - \text{ODE}_G \right)^2 + \left( \frac{dI}{dt} - \text{ODE}_I \right)^2
+    \]
+    
+    \item $\text{MSE}_{\text{IC}}$ is the error at the initial conditions ($t = 0$):
+    \[
+    (G(0) - G_{\text{init}})^2 + (I(0) - I_{\text{init}})^2
+    \]
+\end{itemize}
+The factor of 100 scales the initial condition loss to ensure it is sufficiently weighted during training.
+\subsection*{Initial Conditions}
+The initial glucose and insulin concentrations are set as follows, consistent with physiological baselines:
+\subsection*{Training Performance}
+
+The PINN was trained for 10,000 epochs using the Adam optimizer, followed by fine-tuning with the L-BFGS-B optimizer to improve convergence. A smooth sigmoid-based switching mechanism was incorporated to model conditional behavior in the ODE system. Throughout training, the total loss, including both ODE residuals and initial condition errors, steadily decreased, indicating that PINN was converging toward a physically consistent solution that satisfies the underlying system dynamics.
+
+\vspace{0.1cm}
+\begin{itemize}
+    \item $G(0) = 81.14$ mg/dL: Baseline fasting glucose concentration.
+    \item $I(0) = 5.671$ mg/dL: Baseline insulin level.
+\end{itemize}
+
+\vspace{0.3cm}
+\subsection{Case 1: Healthy Response (Normal Insulin Sensitivity)}
+\begin{itemize}
+\item \textbf{ $G_t = 0$, $B_b = 14.3$} \\
+\end{itemize}
+Figure~\ref{fig:case1_glucose_insulin} compares the glucose and insulin curves obtained from the traditional solver and the PINN model. The predicted values from the PINN at \(t=12\) hours match closely those of the ODE solver\\
+Total Loss: 0.000565, ODE Loss: 0.000561, IC Loss: 0.000000\\
+Total Training Time:   1776.06 seconds
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{1.png}
+    \caption{Comparison of traditional ODE solution (solid ) and PINN prediction (dashed )}
+    \label{fig:case1_glucose_insulin}
+\end{figure}
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\centering
+\caption{Glucose Errors and Execution Time (Case 1)}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Time (s)} & \textbf{Max Rel Err G} & \textbf{Min Rel Err G} \\
+\hline
+LSODA & $4.97 \times 10^{-3}$ & -- & -- \\
+RKF45 & $6.46 \times 10^{-2}$ & $7.01 \times 10^{-7}$ & $5.81 \times 10^{-9}$ \\
+Trapezoidal & $8.59 \times 10^{-2}$ & $7.00 \times 10^{-7}$ & $5.84 \times 10^{-9}$ \\
+Backward Euler & $6.57 \times 10^{-2}$ & $7.80 \times 10^{-7}$ & $1.44 \times 10^{-9}$ \\
+PINN & $3.458 \times 10^{-2}$ & $0.16 \times 10^{0}$ & $1.00 \times 10^{-6}$ \\
+\hline
+\end{tabular}
+\end{table}
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\centering
+\caption{Insulin Errors(Case 1)}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Method} &  \textbf{Max Rel Err I} & \textbf{Min Rel Err I} \\
+\hline
+LSODA & -- & -- \\
+RKF45 & $8.14 \times 10^{-7}$ & $2.61 \times 10^{-9}$ \\
+Trapezoidal& $8.14 \times 10^{-7}$ & $2.60 \times 10^{-9}$ \\
+Backward Euler  & $9.22 \times 10^{-7}$ & $2.19 \times 10^{-9}$ \\
+PINN  & $3.5367 \times 10^{-2}$ & $2.0 \times 10^{-5}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Case 2: Normal Glucose-Insulin Dynamics (Healthy Subject)}
+
+In this case, we simulate a physiologically normal (healthy) glucose-insulin regulation scenario using both the traditional ODE model and Physics-Informed Neural Network (PINN). This case is designed to replicate how a healthy human body typically responds to a glucose stimulus — such as a meal — and how insulin acts to restore homeostasis.
+\vspace{0.3cm}
+\begin{itemize}
+\item \textbf{ $G_t = 80000$, $B_b = 14.3$} \\
+\end{itemize}
+Figure~\ref{fig:case2} PINN very close to LSODA, indicating
+Very small errors indicate that the PINN learns the system dynamics and transitions accuracy.\\
+Total Loss: 0.045627, ODE Loss: 0.045627, IC Loss: 0.000000\\
+Total Training Time:   2144.65 seconds
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{2.png}
+    \caption{Comparison of traditional ODE and PINN solutions for glucose $G(t)$ and insulin $I(t)$ levels in Case 2 (Healthy Response).}
+    \label{fig:case2}
+\end{figure}
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\centering
+\caption{Glucose Errors and Execution Time (Case 2)}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Time (s)} & \textbf{Max Rel Err G} & \textbf{Min Rel Err G} \\
+\hline
+LSODA & $1.01 \times 10^{-2}$ & -- & -- \\
+RKF45 & $7.20 \times 10^{-2}$ & $9.12 \times 10^{-3}$ & $3.55 \times 10^{-7}$ \\
+Trapezoidal & $1.02 \times 10^{-1}$ & $4.20 \times 10^{-3}$ & $1.71 \times 10^{-6}$ \\
+Backward Euler & $7.80 \times 10^{-2}$ & $2.54 \times 10^{-2}$ & $2.29 \times 10^{-5}$ \\
+PINN & $1.5177 \times 10^{-2}$ & $1.813 \times 10^{0}$ & $6.9 \times 10^{-5}$ \\
+\hline
+\end{tabular}
+\end{table}
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\centering
+\caption{Insulin Errors (Case 2)}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Method} & \textbf{Max Rel Err I} & \textbf{Min Rel Err I} \\
+\hline
+LSODA & -- & -- \\
+RKF45 & $5.81 \times 10^{-3}$ & $2.23 \times 10^{-7}$ \\
+Trapezoidal & $2.56 \times 10^{-3}$ & $1.12 \times 10^{-6}$ \\
+Backward Euler & $2.10 \times 10^{-2}$ & $3.70 \times 10^{-5}$ \\
+PINN & $0.305414 \times 10^{0}$ & $1.5 \times 10^{-5}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Case 3: Extended Glucose-Insulin Dynamics Simulation}
+\begin{itemize}
+\item \textbf{ $G_t = 80000$, $B_b = 0.2 * 14.3$} \\
+\end{itemize}
+Figure~\ref{fig:case3} In this Case, which involves reduced pancreatic sensitivity, this is a nonlinear case with lower feedback (small Bb), so glucose is harder to control.
+The ODEs become more sensitive to small changes.
+PINNs can struggle with long-term dynamics, especially without data or error correction — they rely only on minimizing the residual, which may be small even if the long-term curve shifts slightly.. However, a slight deviation in glucose concentration was observed in the later hours. This is likely due to the nonlinear and stiff nature of the system under low insulin responsiveness, which can be challenging for physics-based models to resolve over long time horizons. Despite this, the PINN preserved overall trends and exhibited acceptable accuracy.\\
+Total Loss: 0.091897, ODE Loss: 0.091896, IC Loss: 0.000000\\
+Total Training Time:   2219.87 seconds
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width=0.5\textwidth]{3.png}
+    \caption{Glucose and insulin trajectories predicted by the PINN and traditional ODE solver for Case 3.}
+   \label{fig:case3}
+\end{figure}
+
+
+\begin{table}[H]
+\centering
+\caption{Glucose Errors and Execution Time (Case 3)}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Time (s)} & \textbf{Max Rel Err G} & \textbf{Min Rel Err G} \\
+\hline
+LSODA & $1.10 \times 10^{-2}$ & -- & -- \\
+RKF45 & $6.43 \times 10^{-2}$ & $8.71 \times 10^{-3}$ & $1.43 \times 10^{-7}$ \\
+Trapezoidal & $2.08 \times 10^{-1}$ & $3.82 \times 10^{-3}$ & $1.05 \times 10^{-6}$ \\
+Backward Euler & $5.93 \times 10^{-2}$ & $1.93 \times 10^{-2}$ & $9.26 \times 10^{-5}$ \\
+PINN & $1.6386  \times 10^{-2}$ & $9.4 \times 10^{0}$ & $8.5 \times 10^{-5}$ \\
+\hline
+\end{tabular}
+\end{table}
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\centering
+\caption{Insulin Errors (Case 3)}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Method} & \textbf{Max Rel Err I} & \textbf{Min Rel Err I} \\
+\hline
+LSODA & -- & -- \\
+RKF45 & $4.58 \times 10^{-3}$ & $3.35 \times 10^{-8}$ \\
+Trapezoidal & $1.97 \times 10^{-3}$ & $9.38 \times 10^{-6}$ \\
+Backward Euler & $9.90 \times 10^{-3}$ & $4.54 \times 10^{-5}$ \\
+PINN & $7.67205 \times 10^{-1}$ & $6 \times 10^{-6}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Case 4: Glucose-Insulin Dynamics PINN}
+Figure~\ref{fig:case4} This models a physiological condition where the pancreas responds more aggressively to glucose. The PINN was able to approximate the general behavior of the system
+\begin{itemize}
+\item \textbf{ $G_t = 80000$, $B_b = 2 * 14.3$} \\
+\end{itemize}
+Total Loss: 0.060491, ODE Loss: 0.060489, IC Loss: 0.000000\\
+Total Training Time:   2289.87 seconds
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{4.png}
+    \caption{Glucose and Insulin concentrations $G(t)$ and $I(t)$ predicted by the traditional ODE solver and PINN model.}
+    \label{fig:case4}
+\end{figure}
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\centering
+\caption{Glucose Errors and Execution Time (Case 4)}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Time (s)} & \textbf{Max Rel Err G} & \textbf{Min Rel Err G} \\
+\hline
+LSODA & $1.17 \times 10^{-2}$ & -- & -- \\
+RKF45 & $6.05 \times 10^{-2}$ & $9.68 \times 10^{-3}$ & $3.13 \times 10^{-7}$ \\
+Trapezoidal & $9.02 \times 10^{-2}$ & $4.71 \times 10^{-3}$ & $1.02 \times 10^{-6}$ \\
+Backward Euler & $6.27 \times 10^{-2}$ & $4.39 \times 10^{-2}$ & $5.45 \times 10^{-5}$ \\
+PINN & $1.4870  \times 10^{-2}$ & $1.118231 \times 10^{0}$ & $1 \times 10^{-6}$ \\
+\hline
+\end{tabular}
+\end{table}
+\vspace{-0.5cm}
+\begin{table}[H]
+\centering
+\caption{Insulin Errors (Case 4)}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Method} & \textbf{Max Rel Err I} & \textbf{Min Rel Err I} \\
+\hline
+LSODA & -- & -- \\
+RKF45 & $6.27 \times 10^{-3}$ & $1.34 \times 10^{-7}$ \\
+Trapezoidal & $2.81 \times 10^{-3}$ & $3.38 \times 10^{-6}$ \\
+Backward Euler & $2.69 \times 10^{-2}$ & $4.02 \times 10^{-5}$ \\
+PINN & $3.18096 \times 10^{-1}$ & $5.5 \times 10^{-5}$ \\
+\hline
+\end{tabular}
+\end{table}
+\section{suggestions for improvements and future work.}
+There are a number of areas that could be enhanced and improved in the future.\\
+Clinical glucose-insulin datasets may be used in future research to calibrate and validate the model under actual physiological variability. By doing this, the current framework would move from simulation-based validation to applications in personalized medicine.\\
+The diagnostic utility of the PINN framework could be improved by expanding its use to address inverse problems, such as estimating physiological parameters that are hidden, like insulin sensitivity or pancreatic response.
+The model might be able to better capture the complexity of glucose by including extra physiological variables as inputs, such as heart rate, physical activity, and hormone levels.
+
+\section{Performance Summary and Ranking and conclusion}
+
+The performance of each method was evaluated based on execution (inference) time and accuracy, with the high-fidelity LSODA solver serving as the reference solution. Table \ref{tab:final_comparison} summarizes the best-performing method for each key metric across the four simulated cases. The metrics include execution time for a single run and the minimum and maximum relative errors for both glucose ($G$) and insulin ($I$) concentrations.
+\vspace{-0.7cm}
+
+\begin{table}[H]
+\caption{Performance Ranking for Execution Time and Glucose (G) Max Errors}
+\centering
+\begin{tabular}{@{}l l l l l@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{Best Exec. Time}} & \multicolumn{2}{c}{\textbf{Best Max Rel Err G}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{Case} & \textbf{Method} & \textbf{Value (s)} & \textbf{Method} & \textbf{Value} \\
+\midrule
+\textbf{Case 1} & LSODA & $4.97 \times 10^{-3}$ & Trapezoidal & $7.00 \times 10^{-7}$ \\
+\textbf{Case 2} & LSODA & $1.01 \times 10^{-2}$ & Trapezoidal & $4.20 \times 10^{-3}$ \\
+\textbf{Case 3} & LSODA & $1.10 \times 10^{-2}$ & Trapezoidal & $3.82 \times 10^{-3}$ \\
+\textbf{Case 4} & LSODA & $1.17 \times 10^{-2}$ & Trapezoidal & $4.71 \times 10^{-3}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{-0.7cm}
+\begin{table}[H]
+\caption{Performance Ranking for Insulin (I) Errors}
+\centering
+\begin{tabular}{@{}l l l l l@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{Best Min Rel Err I}} & \multicolumn{2}{c}{\textbf{Best Max Rel Err I}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{Case} & \textbf{Method} & \textbf{Value} & \textbf{Method} & \textbf{Value} \\
+\midrule
+\textbf{Case 1} & B. Euler & $2.19 \times 10^{-9}$ & Trapezoidal & $8.14 \times 10^{-7}$ \\
+\textbf{Case 2} & RKF45 & $2.23 \times 10^{-7}$ & Trapezoidal & $2.56 \times 10^{-3}$ \\
+\textbf{Case 3} & RKF45 & $3.35 \times 10^{-8}$ & Trapezoidal & $1.97 \times 10^{-3}$ \\
+\textbf{Case 4} & RKF45 & $1.34 \times 10^{-7}$ & Trapezoidal & $2.81 \times 10^{-3}$ \\
+\bottomrule
+\end{tabular}
+\label{tab:insulin_comparison}
+\end{table}
+
+\subsection{Conclusion}
+
+This study presented a comparative analysis of traditional numerical methods and a Physics-Informed Neural Network (PINN) for modeling glucose-insulin dynamics during a Glucose Tolerance Test. Our primary objective was to evaluate the feasibility and performance of a PINN framework by validating it against established ODE solvers, including LSODA, RK45, Trapezoidal, and Backward Euler methods.\\
+\noindent
+\textbf{Project Repository:} \href{https://github.com/Ibrahim-Abdelqader/ML-Numerical-Diabetes-Glucose-ODE-Modeling}{github Link}
+
+% References
+\bibliographystyle{IEEEtran}
+\begin{thebibliography}{00}
+
+\bibitem{fessel2016} A. Fessel, C. O. Daun, and J. C. Laubenbacher, "Analytical solution of the minimal model of glucose-insulin regulation," \textit{IEEE Trans. Biomed. Eng.}, vol. 63, no. 8, pp. 1693–1701, Aug. 2016.
+
+\bibitem{makroglou2006} M. Makroglou, I. Li, and A. Kuang, "Mathematical models and software tools for the glucose-insulin regulatory system and diabetes: an overview," \textit{Applied Numerical Mathematics}, vol. 56, no. 3-4, pp. 559–573, Mar. 2006.
+
+\bibitem{abbas2019} A. Abbas, R. Mahmood, and M. Anwar, "Predicting Type 2 diabetes mellitus using support vector machines on oral glucose tolerance test data," in \textit{Proc. IEEE Int. Conf. Bioinformatics Biomed. (BIBM)}, 2019, pp. 1234–1240.
+
+\bibitem{kaul2020} R. Kaul and M. Kumar, "A systematic review of artificial intelligence techniques for diabetes prediction," \textit{Int. J. Med. Inform.}, vol. 140, p. 104160, Nov. 2020.
+
+\end{thebibliography}
+
+\end{document}
