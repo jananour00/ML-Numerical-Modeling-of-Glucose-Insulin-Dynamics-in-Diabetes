@@ -52,7 +52,7 @@
 
 ## About
 a various numerical methods for solving ode's and machine-learning schemes .
-
+<a href =  "https://www.canva.com/design/DAGq1cX-lsk/ITrioljMl9J9iHpE72KnxQ/edit"  />Presentation</a>
 ## 💻 Built Using 
 * ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 * ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
