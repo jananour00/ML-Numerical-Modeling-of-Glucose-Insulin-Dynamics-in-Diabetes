@@ -201,7 +201,7 @@ for i in range(n):
     k1 = h * f(t[i], y[i], params)
     k2 = h * f(t[i] + h / 2, y[i] + k1 / 2, params)
     y[i+1] = y[i] + k2
-
+```
 ---
 
 
