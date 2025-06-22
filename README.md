@@ -228,26 +228,140 @@ The notebook simulates and predicts **glucose (G)** and **insulin (I)** behavior
 | `Training Loop`                  | Trains the PINN by minimizing the residual-based loss using TensorFlow optimizers.          |
 | `Visualization`                  | Plots predicted glucose-insulin curves for all cases.                                        |
 
----
 
-## 🔑 Key Concepts
+This project complements traditional ODE-based simulation of glucose and insulin dynamics by applying a deep learning technique known as a **Physics-Informed Neural Network (PINN)**. 
 
-- **Physics-Informed Neural Networks (PINNs):**
-  - Enforce known biological differential equations during training.
-  - Offer better generalization than purely data-driven models.
-
-- **ODE System Modeled:**
-  - Tracks glucose-insulin interaction with parameters like insulin sensitivity (`Bb`) and infusion (`Gt`).
-
-- **Deep Neural Network Architecture:**
-  - 4 hidden layers, 128 neurons each, `swish` activation.
-  - Output layer with 2 neurons: `[Glucose, Insulin]`.
-
-- **Loss Function Design:**
-  - Custom TensorFlow gradients to enforce physical laws.
-  - Uses `tf.GradientTape` to differentiate `G(t)` and `I(t)` over time.
+PINNs embed the system's **physical laws (ODEs)** directly into the neural network’s training process. This allows the network to learn biologically plausible and physically consistent behavior from time-series data, **without requiring large training datasets**.
 
 ---
+
+## 📌 Overview
+- **Problem domain**: Simulating glucose and insulin concentration in response to a glucose tolerance test.
+- **Approach**: Use of a PINN that enforces the underlying ODEs governing glucose-insulin kinetics.
+- **Framework**: TensorFlow 2.x + SciPy + Matplotlib
+- **Models evaluated**: 4 cases with different infusion levels and pancreatic sensitivity
+
+---
+
+## 🧠 What is a Physics-Informed Neural Network (PINN)?
+A Physics-Informed Neural Network (PINN) is a neural network that learns directly from the governing physical laws of the system, typically written as **ODEs or PDEs**. Instead of just predicting outputs from inputs, a PINN is trained so that its outputs satisfy the governing differential equations using **automatic differentiation**.
+
+PINNs embed the system's physical laws (ODEs) directly into the neural network’s training process. This allows the network to learn biologically plausible and physically consistent behavior directly from the governing equations, without requiring any labeled or time-series data. — making them a form of **unsupervised learning constrained by physics**.
+
+### 🔬 Key Benefits of PINNs:
+- Learn solutions to differential equations
+- Embed known physical laws in the model
+- Require little or no labeled data
+- Allow real-time or parallel simulations once trained
+
+---
+
+## 🏗️ Neural Network Architecture
+- **Input layer**: \( t \in \mathbb{R} \) (time)
+- **Hidden layers**: 4 fully connected layers with 128 neurons each
+- **Activation function**: `swish` (smooth, non-monotonic, better for gradient flow)
+- **Output layer**: \( [G(t), I(t)] \) — predicted glucose and insulin concentrations
+
+---
+
+## 📉 Loss Function
+The model is trained to minimize the following composite loss function:
+
+```math
+\mathcal{L}_{\text{total}} = \text{MSE}_{\text{ODE}} + 100 \cdot \text{MSE}_{\text{IC}}
+```
+
+Where:
+```math
+( \text{MSE}_{\text{ODE}} = \left( \frac{dG}{dt} - \text{ODE}_G \right)^2 + \left( \frac{dI}{dt} - \text{ODE}_I \right)^2 )
+ ```
+```math
+( \text{MSE}_{\text{IC}} = (G(0) - G_{\text{init}})^2 + (I(0) - I_{\text{init}})^2 )
+```
+> The ODE residual is the difference between what the ODE says should happen and what the neural network predicts is happening. A perfect solution would have a residual of zero.
+
+- In PINNs, automatic differentiation is used to compute the exact derivative of the neural network's predicted function, not the true derivative of the physical system. This predicted derivative is then compared to the right-hand side of the governing differential equation. The difference (residual) is minimized during training to guide the network toward a solution that obeys the underlying physics.
+---
+
+## ⚙️ Training Strategy
+The training process used a **two-stage optimization** strategy:
+
+### 1️⃣ Adam Optimizer (Pretraining)
+- First-order gradient-based optimizer
+- Fast convergence and adaptive learning rates
+- 10000 epochs for coarse convergence
+
+### 2️⃣ L-BFGS-B Optimizer (Fine-tuning)
+- A second order optimizer (uses curvature information )
+- Quasi-Newton second-order optimizer
+- Ideal for smooth problems like ODE residual minimization
+- Greatly improves precision after Adam
+
+> **Why two optimizers?** Adam moves weights quickly toward a good region. L-BFGS-B fine-tunes that solution to high accuracy using curvature information.
+
+---
+
+## ⏱️ Time Domain Setup
+- Domain: \( t \in [0, 12] \) hours
+- High resolution during early spike (0–2h), coarser resolution after
+- Smooth sigmoid-based switching handles different physiological regimes in the ODE system
+
+---
+
+## 🧪 Initial Conditions
+Set to physiological baselines:
+- \( G(0) = 81.14 \) mg/dL
+- \( I(0) = 5.671 \) mg/dL
+
+---
+
+## 📊 Results Summary
+| Case | Description | Max Glucose Error | Max Insulin Error | Training Time (s) | PINN Inference Time (s) |
+|------|-------------|-------------------|-------------------|--------------------|--------------------------|
+| 1    | Normal, No Infusion | 0.159 | 0.035 | 1776.06 | 0.0346 |
+| 2    | Normal, Infusion | 1.813 | 0.305 | 2144.65 | 0.0152 |
+| 3    | Reduced Sensitivity | 9.401 | 0.767 | 2219.87 | 0.0164 |
+| 4    | Elevated Sensitivity | 1.118 | 0.318 | 2289.87 | 0.0149 |
+
+---
+
+## 💬 Discussion
+The PINN approach successfully captured the nonlinear dynamics of the glucose-insulin system across various physiological scenarios.
+
+- PINNs were especially effective in Cases 1, 2, and 4.
+- **Case 3** (reduced pancreatic sensitivity) had higher error due to:
+  - Weaker feedback (small \( B_b \))
+  - Slower glucose decay
+  - More sensitive, stiff dynamics over long time spans
+
+> **Why this happens**: In nonlinear and stiff systems, PINNs can struggle with long-term accuracy because they rely solely on minimizing residuals — without corrective data.
+> However, **this can be decreased by increasing the number of training epochs** specifically for Case 3, allowing the neural network more time to learn these slow-changing dynamics. The trade-off is **increased training time**, as more epochs demand more computational resources.
+### 🔄 Interpretation of ODE Residuals
+- PINNs use **automatic differentiation** to compute ``` dG/dt , dI/dt ```
+ from the neural network output.
+- These derivatives are compared with the RHS of the ODE.
+- The difference (residual) is used in training to nudge the network toward physics-consistent solutions.
+
+> Automatic differentiation does not give the "true" physical derivative — it gives the derivative of what the network has learned so far.
+
+---
+
+## ⚡ Performance Benefits of PINNs
+While PINNs are more expensive to train initially (30–38 minutes per case), they:
+- Are **faster at inference time** (15–35 ms)
+- Enable **real-time simulation**
+- Support **parameter studies and unseen scenarios** without retraining
+
+---
+
+## ✅ Conclusion
+PINNs offer a powerful alternative to traditional solvers in biomedical modeling. By embedding differential equations directly into neural networks, they:
+- Learn without labeled data
+- Capture physical constraints
+- Generalize across cases
+
+This hybrid approach merges the flexibility of deep learning with the rigor of physics, making it highly suitable for applications like **Glucose Tolerance Testing (GTT)** and beyond.
+
 
 ## 📊 Cases Modeled
 
